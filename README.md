@@ -7,8 +7,8 @@ My very last attempt at creating a full game engine in a (jam) rush.
 Hopefully functional in 32 days, maybe production ready in 32 weeks, and probably bugfree in 32 ~~months~~ years.
 
 ## Progress
-- [ ] [01 Project structure, makefiles, build system and data pipeline.](doc/day01.md)
-- [ ] 02 Data file formats (text: DEBUG) (binary: RELEASE).
+- [ ] [01 Project structure, makefiles, build system and main loop](doc/day01.md)
+- [ ] [02 Data pipeline and data file formats (text: DEBUG) (binary: RELEASE)](doc/day02.md)
 - [ ] 03 Serialization.
 - [ ] 04 Server/client architecture.
 - [ ] 05 Scripting and bindings.

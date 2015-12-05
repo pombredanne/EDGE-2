@@ -78,6 +78,36 @@ filter "Shipping"
 
 -- EDGE ENGINE
 
+project "eeCore"
+    kind "StaticLib" --"SharedLib"
+    language "C++"
+    includedirs {
+        "../",
+        "../3rd/",
+        "../src/",
+        "../src/*/",
+    }
+    files {
+        "../3rd/frodo/*.*pp",
+        "../3rd/hertz/*.hpp",
+        "../3rd/apathy/*.hpp",
+        "../3rd/journey/*.hpp",
+        "../3rd/whereami/*.?",
+        "../src/**.h",
+        "../src/**.c",
+        "../src/**.*pp",
+        "../src/**.*xx",
+        "../src/**.inl",
+        "../src/**.hh",
+        "../src/**.cc",
+        "../src/**.mm",
+    }
+    defines {
+        os.is("windows") and "WIN32" or "",
+    }
+    links {
+    }
+
 project "eePlayer"
     kind "ConsoleApp"
     language "C++"
@@ -104,6 +134,7 @@ project "eePlayer"
     end
 
     includedirs {
+        "../",
         "../3rd/",
         "../3rd/*/",
         "../3rd/*/include/",
@@ -120,25 +151,6 @@ project "eePlayer"
         "../3rd/SFML2/extlibs/libs-msvc/x64/",
     }
 
-project "eeCore"
-    kind "SharedLib"
-    language "C++"
-    includedirs {
-        "../src/",
-        "../src/*/",
-    }
-    files {
-        "../src/**.h",
-        "../src/**.c",
-        "../src/**.*pp",
-        "../src/**.*xx",
-        "../src/**.inl",
-        "../src/**.hh",
-        "../src/**.cc",
-        "../src/**.mm",
-    }
-    defines {
-        os.is("windows") and "WIN32" or "",
-    }
-    links {
+    links { 
+        "eeCore"
     }

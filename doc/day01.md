@@ -1,4 +1,4 @@
-## Day 01 
+## Day 01
 
 ### Project structure
 
@@ -49,16 +49,48 @@ This `git.hpp` header is used to retrieve status from the current git branch and
 prj\makegit
 ```
 
-### Data pipeline
+### Main initialization
 
-1. The engine player will scan for data contents in current `app/` and `usr/` folders and related subdirs in every launch.
-2. For every source asset, a binary-friendly processed asset will be appended into a big cache/`journal` file.
-3. After all new assets are journaled, the player will proceed to normal execution and run the game.
-4. Since data is journaled you can revert to a previous version by hitting a few keystrokes in the game editor while running.
+I will be using [Frodo](https://github.com/r-lyeh/frodo) to init and deinit the subsystems in EDGE.
+Frodo is a ring dependency system that ensures that everything is done properly in order, even on system signals and crashes.
 
-Tip: Content in `usr/` folder has higher precedence than journaled data. Put content on this folder to preview local data changes quickly on your computer. No one in your team will be annoyed because of your commits & prototiping anymore.
+```c++
+namespace console {
+    bool init() {
+        std::cout << "console subsystem initialized" << std::endl;
+        return true;
+    }
+    bool quit() {
+        std::cout << "bye bye console" << std::endl;
+        return true;
+    }
+}
 
-### Deployment
+int main( int argc, const char **argv ) {
+    // ring lvl#10 subsystem: console
+    frodo::ring( 10, { "console", console::init, console::quit } );
 
-- Just concat `player+journal` file into a new amalgamated binary, and distribute it as desired.
-- This new binary: 1) will not scan for contents on disk ever, 2) will mount appended journal, 3) will start execution as soon as possible.
+    if( !frodo::init() ) {
+        return -1;
+    }
+
+    // app starts here
+    // [...]
+
+    // shutdown
+    return frodo::quit() ? 0 : -1;
+}
+```
+
+### Main loop
+
+The main loop tick and rendering is going to be driven thru [Hertz](https://github.com/r-lyeh/hertz). Hertz is a simple library that balances rendering and auto-frameskip depending on the desired framerates. Let's set it to 60Hz for now:
+
+```c++
+int main() {
+    for(;;) {
+        double fps = hertz::lock( 60 /*Hz*/, []{/*logic here*/}, []{/*render here*/} );
+    }
+}
+```
+
