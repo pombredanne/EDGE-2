@@ -46,6 +46,7 @@ filter "action:vs*"
         "/wd4530", -- C++ exception handler used, but unwind semantics are not enabled.
         "/wd4800", -- forcing value to bool 'true' or 'false' (performance warning)
         "/wd4996", -- this function or variable may be unsafe. Consider using asctime_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS.
+        "/wd4577", -- 'noexcept' used with no exception handling mode specified; termination on exception is not guaranteed. Specify /EHsc
     }
 
 filter "Debug"
@@ -96,10 +97,10 @@ project "eeCore"
         "../src/**.h",
         "../src/**.c",
         "../src/**.*pp",
-        "../src/**.*xx",
         "../src/**.inl",
         "../src/**.hh",
-        "../src/**.cc",
+        --"../src/**.cc",
+        --"../src/**.*xx",
         "../src/**.mm",
     }
     defines {
@@ -119,9 +120,9 @@ project "eePlayer"
         "../src/**.hxx",
 
         "../src/**.c",
-        "../src/**.cc",
+        --"../src/**.cc",
+        --"../src/**.cxx",
         "../src/**.cpp",
-        "../src/**.cxx",
 
         "../src/**.inl",
         "../src/**.ipp",

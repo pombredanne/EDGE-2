@@ -7,9 +7,9 @@ My very last attempt at creating a full game engine in a (jam) rush.
 Hopefully functional in 32 days, maybe production ready in 32 weeks, and probably bugfree in 32 ~~months~~ years.
 
 ## Progress
-- [ ] [01 Project structure, makefiles, build system and main loop](doc/day01.md)
+- [x] [01 Project structure, makefiles, build system and main loop](doc/day01.md)
 - [ ] [02 Data pipeline and data file formats (text: DEBUG) (binary: RELEASE)](doc/day02.md)
-- [ ] 03 Serialization.
+- [ ] [03 Message and serialization pipelines](doc/day03.md)
 - [ ] 04 Server/client architecture.
 - [ ] 05 Scripting and bindings.
 - [ ] 06 Abstract input/HID interface: bindings, digital/analog inputs, filters, gestures, chords and combos.
@@ -41,7 +41,10 @@ Hopefully functional in 32 days, maybe production ready in 32 weeks, and probabl
 - [ ] 32 Full Motion Video and integrated cinematics.
 
 ## Screenshots
-|Day 1|Day 2|Day 3|
-|:---:|:---:|:---:|
-|![day01](img/day01.gif)|||
+|Day 01|Day 02|
+|:---:|:---:|
+|![day01](img/day01.gif)|![day02](img/day02.gif)|
 
+|Day 03|Day 04|
+|:---:|:---:|
+|||

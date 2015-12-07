@@ -61,41 +61,128 @@ int eeQuit();
 int eeLoadModule();
 int eeQuitModule();
 
-#include <3rd/frodo/frodo.hpp>
-#include <3rd/hertz/hertz.hpp>
+#include "3rd.hpp"
+#include "api.hpp"
 #include <iostream>
 
 namespace memory {
     bool init() {
+        std::cout << "[ OK ] setup: memory" << std::endl;
         return true;
     }
     bool quit() {
+        std::cout << "[ OK ] teardown: mem" << std::endl;
         return true;
     }
 }
 
 namespace logger {
     bool init() {
-        std::cout << "logger subsystem initialized" << std::endl;
+        std::cout << "[ OK ] setup: logger" << std::endl;
         return true;
     }
     bool quit() {
+        std::cout << "[ OK ] teardown: logger" << std::endl;
         return true;
     }
 }
 
 namespace console {
     bool init() {
-        std::cout << "console subsystem initialized" << std::endl;
+        std::cout << "[ OK ] setup: console" << std::endl;
         return true;
     }
     bool quit() {
-        std::cout << "bye bye console" << std::endl;
+        std::cout << "[ OK ] teardown: console" << std::endl;
         return true;
     }
 }
 
-int main( int argc, const char **argv ) {
+namespace framelocker {
+    bool init() {
+        std::cout << "[ OK ] setup: framerate locker" << std::endl;
+        hertz::lock( 60, []{}, []{} );
+        return true;
+    }
+    bool quit() {
+        std::cout << "[ OK ] teardown: framerate locker" << std::endl;
+        hertz::unlock();
+        return true;
+    }
+}
+
+namespace vfs {
+    journey j;
+    bool init() {
+        std::cout << "[ OK ] setup: virtual filesystem" << std::endl;
+        j = journey();
+        std::string journal_app;
+        std::string journal_alt;
+        eeModuleGetApplicationPath(journal_app);
+        journal_alt = journal_app.substr( 0, journal_app.find_last_of('.') ) + ".joy";
+        j.init( journal_app );
+        bool scan_app = 1, scan_res = 1, scan_usr = 1;
+        if( j.load() ) {
+            std::cout << "[ OK ] appended journal found " << std::endl;
+            scan_app = scan_res = 0;
+        } else {
+            std::cout << "[ OK ] appended journal not found, using '" << journal_alt << "' instead..." << std::endl;
+            j.init( journal_alt );
+            j.load();
+        }
+        if( scan_app || scan_res || scan_usr ) {
+            auto scan = [&]( const std::string &path ) {
+                auto glob = apathy::lsr( path );
+                for( auto &pathfile : glob ) {
+                    bool is_file = pathfile.back() != '/';
+                    bool is_dot = apathy::name(pathfile).front() == '.';
+                    if( is_file && !is_dot ) {
+                        auto stamp = apathy::mdate(pathfile);
+                        j.append( unify(pathfile), apathy::read(pathfile).c_str(), apathy::size(pathfile), stamp );
+                    }
+                }
+            };
+            if( scan_app ) {
+                scan( "app/" );
+            }
+            if( scan_res ) {
+                scan( "res/" );
+            }
+            if( scan_usr ) {
+                scan( "usr/" );
+            }
+            // reload whole toc
+            j.load();
+
+        }
+    #ifndef SHIPPING
+        auto toc = j.get_toc();
+        for( auto &item : toc ) {
+            const auto &name = item.first;
+            const auto &entry = item.second;
+            std::cout << "[ OK ] journal found: " << name << " (" << entry.size << " bytes)" << std::endl;
+        }
+    #endif
+        // } vfs
+
+        // test vfs
+        auto welcome = j.read(unify("txt/welcome"));
+        if( welcome.empty() ) {
+            std::cout << "[FAIL] vfs" << std::endl;
+        } else {
+            std::cout << "[ OK ] vfs read: " << welcome << std::endl;
+        }
+
+        return welcome.empty() ? false : true;
+    }
+    bool quit() {
+        std::cout << "[ OK ] teardown: virtual filesystem" << std::endl;
+        return true;
+    }
+}
+
+
+bool init() {
     printf("%s\n", EE_TEXT);
 
     // app-defined levels
@@ -118,28 +205,62 @@ int main( int argc, const char **argv ) {
     //frodo::ring( 45, { "world", world::init, world::quit } );
     // 50 ui
     //frodo::ring( 59, { "help", help::init, help::quit } ); 
+    frodo::ring( 100, { "framerate-locker", framelocker::init, framelocker::quit } ); 
+    frodo::ring( 101, { "virtual fs", vfs::init, vfs::quit } ); 
 
-    if( !frodo::init() ) {
-        return -1;
-    }
+    return frodo::init();
+}
 
-    auto tick = [] {
+#ifdef _WIN32
+#include <windows.h>
+#pragma comment(lib, "user32.lib")
+#endif
 
+#include <algorithm>
+#include <iostream>
+#include <time.h>
+#include <stdio.h>
+
+void game() {
+    unsigned HZ = 60, updates = 0, frames = 0, fps = 0;
+
+    auto tick = [&]{ 
+        updates++;
+#ifdef _WIN32
+        static auto &once = std::cout << "FPS keys: up, down, escape, space" << std::endl;
+        if( GetAsyncKeyState(VK_UP) & 0x8000 )  HZ+=(std::min)((std::max)(int(HZ*0.01), 1), 5);
+        if( GetAsyncKeyState(VK_DOWN) & 0x8000 ) if(HZ > (std::max)(int(HZ*0.01), 1)) HZ-=(std::max)(int(HZ*0.01), 1);
+        if( GetAsyncKeyState(VK_ESCAPE) & 0x8000 ) exit(0);
+        if( GetAsyncKeyState(VK_SPACE) & 0x8000 ) Sleep( rand() % 80 );
+#endif
     };
 
-    auto render = [] {
-        static unsigned c = 0;
-        std::cout << "[ OK ] Running... " << "\\|/-"[(c++)%4] << "\r";
+    auto render = [&]{ 
+        frames++; 
+        char bar[] = "\\|/-";
+        auto current_time = time(NULL);
+        auto sec = localtime(&current_time)->tm_sec;
+
+        printf( "(%d/%d) [%c] updates %02ds [%c] frames \r",
+            fps, HZ, bar[updates%4], sec, bar[frames%4] );
     };
 
-    // app starts here
-    for( int i = 0; i < 60 * 10; ++i ) {
-        double fps = hertz::lock( 60, tick, render ); 
+    for(;;) {
+        fps = hertz::lock( HZ, tick, render );
     }
 
-    // deinit
-    hertz::lock( -1, []{}, []{} ); 
+    puts("");
+}
 
+
+bool quit() {
     // shutdown
-    return frodo::quit() ? 0 : -1;
+    return frodo::quit();
+}
+
+int main( int argc, const char **argv ) {
+    if( init() ) {
+        game();
+        quit();
+    }
 }

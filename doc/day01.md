@@ -5,12 +5,14 @@
 So here is the planned disk structure for the project:
 
 - [:open_file_folder:&nbsp;/](/), readmes and scripts.
-- [:open_file_folder:&nbsp;/3rd/](/3rd), third-party libraries.
-- [:open_file_folder:&nbsp;/app/](/app), where game datas are located.
+- [:open_file_folder:&nbsp;/3rd/](/3rd), where third-party libraries are located.
+- [:open_file_folder:&nbsp;/app/](/app), where game sources are located.
+- [:open_file_folder:&nbsp;/bin/](/bin), where game datas are written.
 - [:open_file_folder:&nbsp;/dev/](/dev), where tools are located. some of them might be compiled during the build process as well.
 - [:open_file_folder:&nbsp;/doc/](/doc), where documentation and blog posts are located.
 - [:open_file_folder:&nbsp;/img/](/img), where screenshots and videos are written.
 - [:open_file_folder:&nbsp;/prj/](/prj), where projects and build scripts are located.
+- [:open_file_folder:&nbsp;/res/](/res), where raw game resources are located.
 - [:open_file_folder:&nbsp;/src/](/src), where engine sources are located.
 - [:open_file_folder:&nbsp;/tut/](/tut), where diverse tutorials are located.
 - [:open_file_folder:&nbsp;/usr/](/usr), where local user datas are located.
@@ -27,7 +29,7 @@ echo clone repo   && git clone https://github.com/r-lyeh/EDGE && cd EDGE
 
 ### Makefiles and build system
 
-I could have used [genie](https://github.com/bkaradzic/genie) or [cmake](https://cmake.org/) for this, but I used [premake5](https://bitbucket.org/premake/premake-dev/wiki/Home) instead.
+I could have used [Genie](https://github.com/bkaradzic/genie) or [CMake](https://cmake.org/) for this, but I used [Premake5](https://bitbucket.org/premake/premake-dev/wiki/Home) instead.
 
 The premake5 script needs some refactoring but it works for now.
 The premake5 binaries are located in the `prj/` folder.
@@ -36,10 +38,10 @@ The premake5 binaries are located in the `prj/` folder.
 
 ```
 echo posix builds && prj/premake5 gmake  && make -j
-echo win32 builds && prj\premake5 vs2013 && msbuild ee.sln /m /p:FS=true /verbosity:minimal
+echo win32 builds && prj\premake5 vs2015 && msbuild ee.sln /m /p:FS=true /verbosity:minimal
 ```
 
-Tip: 32-bit builds will trigger a `static_assert` and stop the build on purpose. Comment it out if you want to. This is to ensure that the 64-bit build is always active and in good shape.
+Tip: 32-bit builds will trigger an error and stop the build on purpose. Comment it out if you want to. This is to ensure that the 64-bit build is always in good shape.
 
 ### Regenerating git.hpp
 
@@ -57,11 +59,11 @@ Frodo is a ring dependency system that ensures that everything is done properly 
 ```c++
 namespace console {
     bool init() {
-        std::cout << "console subsystem initialized" << std::endl;
+        std::cout << "console setup" << std::endl;
         return true;
     }
     bool quit() {
-        std::cout << "bye bye console" << std::endl;
+        std::cout << "console teardown" << std::endl;
         return true;
     }
 }
@@ -70,15 +72,13 @@ int main( int argc, const char **argv ) {
     // ring lvl#10 subsystem: console
     frodo::ring( 10, { "console", console::init, console::quit } );
 
-    if( !frodo::init() ) {
-        return -1;
+    if( frodo::init() ) {
+        // app starts here
+        // [...]
+
+        // shutdown
+        return frodo::quit() ? 0 : -1;
     }
-
-    // app starts here
-    // [...]
-
-    // shutdown
-    return frodo::quit() ? 0 : -1;
 }
 ```
 
@@ -87,10 +87,10 @@ int main( int argc, const char **argv ) {
 The main loop tick and rendering is going to be driven thru [Hertz](https://github.com/r-lyeh/hertz). Hertz is a simple library that balances rendering and auto-frameskip depending on the desired framerates. Let's set it to 60Hz for now:
 
 ```c++
-int main() {
+int gameloop() {
     for(;;) {
         double fps = hertz::lock( 60 /*Hz*/, []{/*logic here*/}, []{/*render here*/} );
     }
+    hertz::unlock();
 }
 ```
-
