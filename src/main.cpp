@@ -155,14 +155,14 @@ namespace vfs {
             j.load();
 
         }
-    #ifndef SHIPPING
+#ifndef SHIPPING
         auto toc = j.get_toc();
         for( auto &item : toc ) {
             const auto &name = item.first;
             const auto &entry = item.second;
             std::cout << "[ OK ] journal found: " << name << " (" << entry.size << " bytes)" << std::endl;
         }
-    #endif
+#endif
         // } vfs
 
         // test vfs
@@ -182,7 +182,7 @@ namespace vfs {
 }
 
 
-bool init() {
+int eeGameInit() {
     printf("%s\n", EE_TEXT);
 
     // app-defined levels
@@ -191,7 +191,9 @@ bool init() {
     // 10 subsystems
     frodo::ring( 13, { "logger", logger::init, logger::quit } );
     frodo::ring( 14, { "console", console::init, console::quit } );
+    frodo::ring( 15, { "framerate-locker", framelocker::init, framelocker::quit } ); 
     // 20 devices 
+    frodo::ring( 20, { "filesystem", vfs::init, vfs::quit } ); 
     //frodo::ring( 20, { "audio", audio::init, audio::quit } );
     //frodo::ring( 25, { "data", data::init, data::quit } );
     //frodo::ring( 27, { "input", input::init, input::quit } );
@@ -205,10 +207,8 @@ bool init() {
     //frodo::ring( 45, { "world", world::init, world::quit } );
     // 50 ui
     //frodo::ring( 59, { "help", help::init, help::quit } ); 
-    frodo::ring( 100, { "framerate-locker", framelocker::init, framelocker::quit } ); 
-    frodo::ring( 101, { "virtual fs", vfs::init, vfs::quit } ); 
 
-    return frodo::init();
+    return frodo::init() ? 0 : -1;
 }
 
 #ifdef _WIN32
@@ -221,7 +221,7 @@ bool init() {
 #include <time.h>
 #include <stdio.h>
 
-void game() {
+int eeGameLoop() {
     unsigned HZ = 60, updates = 0, frames = 0, fps = 0;
 
     auto tick = [&]{ 
@@ -250,17 +250,18 @@ void game() {
     }
 
     puts("");
+    return 0;
 }
 
 
-bool quit() {
+int eeGameQuit() {
     // shutdown
-    return frodo::quit();
+    return frodo::quit() ? 0 : -1;
 }
 
 int main( int argc, const char **argv ) {
-    if( init() ) {
-        game();
-        quit();
+    if( eeGameInit() >= 0 ) {
+        eeGameLoop();
+        eeGameQuit();
     }
 }

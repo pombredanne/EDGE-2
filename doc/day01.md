@@ -55,22 +55,15 @@ prj\makegit
 
 I will be using [Frodo](https://github.com/r-lyeh/frodo) to init and deinit the subsystems in EDGE.
 Frodo is a ring dependency system that ensures that everything is done properly in order, even on system signals and crashes.
+Frodo can also restart the application to a desired ring, or a full restart.
 
 ```c++
-namespace console {
-    bool init() {
-        std::cout << "console setup" << std::endl;
-        return true;
-    }
-    bool quit() {
-        std::cout << "console teardown" << std::endl;
-        return true;
-    }
-}
-
 int main( int argc, const char **argv ) {
-    // ring lvl#10 subsystem: console
-    frodo::ring( 10, { "console", console::init, console::quit } );
+    // ring level #0 subsystem: console and memory
+    frodo::ring( 0, { "memory", memory::init, memory::quit } );
+    frodo::ring( 0, { "console", console::init, console::quit } );
+    // ring level #1 subsystem: opengl
+    frodo::ring( 1, { "opengl", opengl::init, opengl::quit } );
 
     if( frodo::init() ) {
         // app starts here

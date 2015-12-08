@@ -26,13 +26,14 @@
 // opcode = message.argv[0]
 
 enum eeResultCodes {
-    EE_ERR_INVALID_ARGUMENT = -1,
-    EE_ERR_INVALID_DEVICE = -2,
-    EE_ERR_INVALID_STATUS = -3,
-    EE_ERR_NO_DATA = -4,
-    EE_ERR_NO_SUCH_FILE_OR_DIRECTORY = -5,
-    EE_ERR_NO_ENOUGH_MEM = -6,
-    EE_ERR_NO_EMPTY = -7,
+    EE_ERR_NOT_SPECIFIED = -1,
+    EE_ERR_INVALID_ARGUMENT = -2,
+    EE_ERR_INVALID_DEVICE = -3,
+    EE_ERR_INVALID_STATUS = -4,
+    EE_ERR_NO_DATA = -5,
+    EE_ERR_NO_SUCH_FILE_OR_DIRECTORY = -6,
+    EE_ERR_NO_ENOUGH_MEM = -7,
+    EE_ERR_NO_EMPTY = -8,
 };
 
 struct eeGameState {

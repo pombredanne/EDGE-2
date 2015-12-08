@@ -8,8 +8,8 @@ Hopefully functional in 32 days, maybe production ready in 32 weeks, and probabl
 
 ## Progress
 - [x] [01 Project structure, makefiles, build system and main loop](doc/day01.md)
-- [ ] [02 Data pipeline and data file formats (text: DEBUG) (binary: RELEASE)](doc/day02.md)
-- [ ] [03 Message and serialization pipelines](doc/day03.md)
+- [x] [02 Data pipeline and binary/text file formats](doc/day02.md)
+- [ ] [03 Message pipeline and serialization](doc/day03.md)
 - [ ] 04 Server/client architecture.
 - [ ] 05 Scripting and bindings.
 - [ ] 06 Abstract input/HID interface: bindings, digital/analog inputs, filters, gestures, chords and combos.

@@ -3,7 +3,7 @@
 ### Data pipeline
 
 1. The engine player will scan for data contents in current `app/`, `res/` and `usr/` folders and related subdirs in every launch.
-2. For every source asset, a binary-friendly processed asset will be appended into a big cache/journal file (`.journal` extension).
+2. For every source asset, a binary-friendly processed asset will be appended into a big cache/journal file (`.joy` extension).
 3. After all new assets are journaled, the player will proceed to normal execution and run the game.
 4. Since data is journaled you can revert to a previous version by hitting a few keystrokes in the game editor while running.
 
@@ -11,7 +11,7 @@ Tip: Content in `usr/` folder has higher precedence than journaled data. Put con
 
 ### Deployment
 
-- Just concat `player+journal` file into a new amalgamated binary, and distribute it as desired. This new binary will...
+- Just concat `player+player.joy` file into a new amalgamated binary, and distribute it as desired. This new binary will...
 - 1) will mount existing appended journal,
 - 2) will scan `usr/` folder only (mods anyone?),
 - 3) will start execution as soon as possible.
@@ -30,7 +30,7 @@ I have just implemented today a separate library [(journey)](https://github.com/
 I am also adding three libraries in the repository:
 - [Apathy](https://github.com/r-lyeh/apathy), to do memory-map, path and file operations in a portable way.
 - [Unify](https://github.com/r-lyeh/unify), to unify game asset names to unique identifiers in a portable way.
-- [Whereami](https://github.com/gpakosz/whereami), to locate paths of the current executable and the current module. Wrote a [tiny C++ wrapper here](src/app)
+- [Whereami](https://github.com/gpakosz/whereami), to locate paths of the current executable and the current module. Wrote a [tiny C++ wrapper here](../src/app)
 
 These three libraries together meet the data pipeline tech requeriments. It's only about connecting the wires now. Something similar to:
 
@@ -52,13 +52,13 @@ int main() {
 
 ### MIME types
 
-It is often nice to auto-detect file types, specially when file extensions are wrong or hidden. I stumbled upon [file-type](https://github.com/sindresorhus/file-type), a nice javascript library that detects mime types. I ported it and the new C++ library is found in the [mime/](src/mime) folder. It basically tells you the extension and mime type for a given byte stream. That easy.
+It is often nice to auto-detect file types, specially when file extensions are wrong or hidden. I stumbled upon [file-type](https://github.com/sindresorhus/file-type), a nice javascript library that detects mime types. I ported it and the new C++ library is found in the [mime/](../src/mime) folder. It basically tells you the extension and mime type for a given byte stream. That easy.
 
 ### Watchdog
 
 A watchdog library is that one that notifies you about local changes on the monitored files you are watching. I do not know if I will be using this, but it is always handy, specially when monitoring shaders and other graphic assets.
 
-I created quickly a Watchdog library that builds on top of Apathy. The library can be found in the [watchdog/](src/watchdog) folder.
+I created quickly a Watchdog library that builds on top of Apathy. The library can be found in the [watchdog/](../src/watchdog) folder.
 
 I could have used the original library (where I took the inspiration from) [Watchdog library](https://github.com/simongeilfus/Watchdog), or maybe [EFSW](https://bitbucket.org/SpartanJ/efsw) instead.
 
