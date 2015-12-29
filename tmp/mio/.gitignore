@@ -1,0 +1,9 @@
+build
+data
+.DS_Store
+.*.swp
+*.iqe
+*.iqm
+*.dae
+*.blend
+*.exe

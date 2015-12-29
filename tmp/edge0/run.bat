@@ -1,0 +1,3 @@
+pushd ..\bin
+edge
+popd

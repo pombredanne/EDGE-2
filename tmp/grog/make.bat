@@ -1,0 +1,1 @@
+cl grog.cpp medea.cpp /Oy- /Zi /MDd /EHsc

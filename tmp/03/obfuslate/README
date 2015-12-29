@@ -1,0 +1,45 @@
+obfuslate, a tiny gzip decoder.
+
+A short almost incomprehensible implementation of inflate capable of decoding gzip files.
+
+Two test scripts are provided. test-obfuslate is used to test a binary against a number of artificial, pseudo-real and real compressed texts from the Repetitive Corpus (see references). test-btypes tests decoding of each DEFLATE block type using specially formatted archives.
+
+Implementation notes.
+
+Supports all three DEFLATE block types; no compression, fixed and dynamic Huffman code tables.
+
+Skips ID1 and ID2 check.
+
+Assumes CM == 8 (deflate).
+
+Skips FHCRC, FEXTRA, FNAME and FCOMMENT (if they exist).
+
+Skips the final CRC32 check.
+
+Requires a compiler that supports statement expressions.
+
+Tested on:
+
+gcc version 4.8.1 x86_64-unknown-linux-gnu
+gcc version 4.7.2 x86_64-unknown-linux-gnu
+icc version 12.1.3 (gcc version 4.6.0 compatibility)
+pgcc 12.10-0 64-bit target on x86-64 Linux -tp sandybridge
+clang version 3.3 (tags/RELEASE_33/final) x86_64-unknown-linux-gnu
+tcc version 0.9.26 (x86-64 Linux)
+
+gcc version 4.3.1 sparc-sun-solaris2.10
+cc: Sun C 5.9 SunOS_sparc Patch 124867-09 2008/11/25
+
+References.
+
+DEFLATE Compressed Data Format Specification version 1.3
+http://www.ietf.org/rfc/rfc1951.txt
+
+GZIP file format specification version 4.3
+http://www.ietf.org/rfc/rfc1952.txt
+
+An Explanation of the Deflate Algorithm
+http://zlib.net/feldspar.html
+
+Repetitive Corpus
+http://pizzachili.dcc.uchile.cl/repcorpus.html

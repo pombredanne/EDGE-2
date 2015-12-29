@@ -1,0 +1,6 @@
+#ifndef RPC_DETAIL_PLATFORM_HPP_INCLUDED
+#define RPC_DETAIL_PLATFORM_HPP_INCLUDED
+
+#define IS_TRIVIALLY_COPYABLE( T ) ( std::is_trivially_copyable< T >::value )
+
+#endif //RPC_DETAIL_PLATFORM_HPP_INCLUDED

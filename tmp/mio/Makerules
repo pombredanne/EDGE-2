@@ -1,0 +1,31 @@
+# System specific configuration
+
+OS := $(shell uname)
+OS := $(OS:MINGW%=MINGW)
+
+CFLAGS := -Wall -I.
+
+ifeq "$(build)" "debug"
+CFLAGS += -g -DDEBUG
+endif
+ifeq "$(build)" "release"
+CFLAGS += -O2 -DNDEBUG -fomit-frame-pointer
+endif
+
+ifeq "$(OS)" "Linux"
+LIBS += -lglut -lGL -lm -ldl
+endif
+
+ifeq "$(OS)" "Darwin"
+CFLAGS += -m32
+LDFLAGS += -m32
+LIBS += -framework GLUT -framework OpenGL -framework Cocoa
+endif
+
+ifeq "$(OS)" "MINGW"
+CFLAGS += -DFREEGLUT_STATIC -I../freeglut/include -DHAVE_SRGB_FRAMEBUFFER
+LIBS += -L../freeglut/lib -lfreeglut_static -lopengl32 -lwinmm -lgdi32
+ifeq "$(build)" "release"
+LIBS += -mwindows
+endif
+endif

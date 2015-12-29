@@ -1,0 +1,8 @@
+example.cpp
+D:\Archivos de programa (x86)\Microsoft Visual Studio 12.0\VC\INCLUDE\xlocale(337) : warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify /EHsc
+d:\prj\edge\tmp\04\module\chaiscript\include\chaiscript\dispatchkit\bootstrap.hpp(264) : error C2783: 'std::shared_ptr<_Ty> std::make_shared(_Types &&...)' : could not deduce template argument for '_Ty'
+        D:\Archivos de programa (x86)\Microsoft Visual Studio 12.0\VC\INCLUDE\memory(1000) : see declaration of 'std::make_shared'
+d:\prj\edge\tmp\04\module\chaiscript\include\chaiscript\dispatchkit\bootstrap.hpp(407) : error C2783: 'std::shared_ptr<_Ty> std::make_shared(_Types &&...)' : could not deduce template argument for '_Ty'
+        D:\Archivos de programa (x86)\Microsoft Visual Studio 12.0\VC\INCLUDE\memory(1000) : see declaration of 'std::make_shared'
+..\include\chaiscript/dispatchkit/bootstrap_stl.hpp(530) : error C2783: 'std::shared_ptr<_Ty> std::make_shared(_Types &&...)' : could not deduce template argument for '_Ty'
+        D:\Archivos de programa (x86)\Microsoft Visual Studio 12.0\VC\INCLUDE\memory(1000) : see declaration of 'std::make_shared'

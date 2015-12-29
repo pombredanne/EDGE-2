@@ -1,0 +1,21 @@
+language: erlang
+
+env:
+  global:
+    - LUAROCKS_BASE=luarocks-2.2.0
+  matrix:
+    - LUA=lua5.1 LUA_DEV=liblua5.1-dev LUA_VER=5.1 LUA_SFX=5.1 LUA_INCDIR=/usr/include/lua5.1
+    - LUA=lua5.2 LUA_DEV=liblua5.2-dev LUA_VER=5.2 LUA_SFX=5.2 LUA_INCDIR=/usr/include/lua5.2
+    - LUA=lua5.3 LUA_DEV=liblua5.3-dev LUA_VER=5.3 LUA_SFX= LUA_INCDIR=/usr/local/include
+    - LUA=luajit LUA_DEV=libluajit-5.1-dev LUA_VER=5.1 LUA_SFX=jit LUA_INCDIR=/usr/include/luajit-2.0 LUAJIT_VER=2.0
+    - LUA=luajit LUA_DEV=libluajit-5.1-dev LUA_VER=5.1 LUA_SFX=jit LUA_INCDIR=/usr/include/luajit-2.1 LUAJIT_VER=2.1
+
+before_install:
+  - travis/before_install.sh;
+
+install:
+  - sudo luarocks install lunitx
+
+script: 
+  - cd unittest
+  - lua$LUA_SFX run.lua

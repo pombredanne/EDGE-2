@@ -1,0 +1,26 @@
+-- basic dialog choice.
+0: Hi! Welcome to OSSland! | Is this your first visit? -> 1 2 ?
+1: Yes, I just arrived -> 3
+2: No, I've been here before -> 4
+3: Awesome! Have fun! -> 5 !
+4: Hey, welcome back -> 5 !
+
+-- more complex sample
+5: Hey. Do you want to be my friend? -> 6 7 8 9 ?
+6: Yes -> 10
+7: No -> 11
+8: Maybe -> 12
+9: Not sure -> 12
+10: Great! -> 14 !
+11: Awwww -> 13 !
+12: Please! -> 5 !
+
+-- scripting
+13: Oh hi
+14: Hello friend! | Have you heard about the monster in the forest? | <monster> <scary>
+
+-- facts and knowledge additions
+monster: Monsters are real!
+banana: Meh! I hate bananas!
+-- tell me more about "bananas"
+banana+: I once landed in an island full of bananas... | I got sick of them

@@ -1,0 +1,152 @@
+#if 0
+
+/* OpenGL example code - fbo & fxaa
+ *
+ * render the cube from the perspective example to a texture and
+ * apply fxaa antialiasing to it.
+ *
+ * Autor: Jakob Progsch
+ */
+
+#include <eve/eve.hpp>
+
+//#include <GLXW/glxw.h>
+#include <GLFW/glfw3.h>
+
+//glm is used to create perspective and transform matrices
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
+#include <iostream>
+#include <string>
+#include <vector>
+
+#include <eve/eve.hpp>
+
+
+int width = 0;
+int height = 0;
+GLFWwindow *window = 0;
+
+int setupgl( int width_, int height_ ) {
+    if(glfwInit() == GL_FALSE) {
+        std::cerr << "failed to init GLFW" << std::endl;
+        return 0;
+    }
+
+    // select opengl version
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+
+    // create a window
+    if((window = glfwCreateWindow(width = width_, height = height_, "05fbo_fxaa", 0, 0)) == 0) {
+        std::cerr << "failed to open window" << std::endl;
+        glfwTerminate();
+        return 0;
+    }
+
+    glfwMakeContextCurrent(window);
+
+//    if(glxwInit()) {
+    if(glewInit(),0) {
+        std::cerr << "failed to init GL3W" << std::endl;
+        glfwDestroyWindow(window);
+        glfwTerminate();
+        return 0;
+    }
+
+    return 1;
+}
+int setupgl() {
+    return setupgl( 640, 480 );
+}
+void swapgl() {
+    glfwSwapBuffers(window);
+}
+void quitgl() {
+    // delete the created objects
+    glfwDestroyWindow(window);
+    glfwTerminate();
+}
+bool pollgl() {
+    bool keep = !glfwWindowShouldClose(window);
+    glfwPollEvents();
+    return keep;
+}
+
+#include <fstream>
+#include <sstream>
+std::string glslf(int version, const std::string &filename ) {
+    std::ifstream ifs( filename.c_str() );
+    std::stringstream ss;
+    ss << "#version " << version << std::endl << ifs.rdbuf();
+    return ss.str();
+}
+
+#include "TLFXPortEffectsLibrary.h"
+#include <TLFXEffectsLibrary.h>
+#include <TLFXParticleManager.h>
+#include <TLFXEffect.h>
+TLFX::EffectsLibrary *gEffects = NULL;
+TLFXPortParticleManager *gPM = NULL;
+void setup() {
+    gEffects = new TLFXPortEffectsLibrary();
+    gEffects->Load("particles/data.xml");
+
+    gPM = new TLFXPortParticleManager();
+    gPM->SetScreenSize(width, height);
+    gPM->SetOrigin(0, 0);
+
+    TLFX::Effect *eff = gEffects->GetEffect("Area Effects/Swirly Balls");
+    TLFX::Effect *copy = new TLFX::Effect(*eff, gPM);
+
+    copy->SetPosition(0.0f, 0.0f);
+    gPM->AddEffect(copy);
+}
+void shutdown() {
+    delete gEffects;
+    delete gPM;
+}
+void draw() {
+    gPM->Update();
+
+    gPM->DrawParticles();
+    gPM->Flush();
+}
+
+
+int main() {
+
+    if( !setupgl() ) {
+        return 1;
+    }
+
+    setup();    
+
+    while( pollgl() ) {
+
+        if(!eve::lock(60.f))
+            continue;
+
+        draw();
+/*
+        // check for errors
+        GLenum error = glGetError();
+        if(error != GL_NO_ERROR) {
+            std::cerr << "GLError:" << error << std::endl;
+            break;
+        }
+*/
+        // finally swap buffers
+        swapgl();
+    }
+
+    shutdown();
+    quitgl();
+
+    return 0;
+}
+
+#endif

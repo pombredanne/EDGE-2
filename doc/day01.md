@@ -19,8 +19,7 @@ So here is the planned disk structure for the project:
 
 ### Cloning
 
-The cloning process becomes sloppy when there are too many submodules in a git repo. 
-So there are no submodules in the repository for now.
+Cloning a git repo with too many submodules in it may become sloppy, so there are no submodules in the repository for now.
 Clone the repo by typing:
 
 ```
@@ -41,7 +40,7 @@ echo posix builds && prj/premake5 gmake  && make -j
 echo win32 builds && prj\premake5 vs2015 && msbuild ee.sln /m /p:FS=true /verbosity:minimal
 ```
 
-Tip: 32-bit builds will trigger an error and stop the build on purpose. Comment it out if you want to. This is to ensure that the 64-bit build is always in good shape.
+Tip: 64-bit builds are the main supported architecture. 32-bit builds will trigger an error and stop the build on purpose; to generate 32-bit builds, comment out the line from the source.
 
 ### Regenerating git.hpp
 
@@ -53,9 +52,9 @@ prj\makegit
 
 ### Main initialization
 
-I will be using [Frodo](https://github.com/r-lyeh/frodo) to init and deinit the subsystems in EDGE.
+I will be using [Frodo](https://github.com/r-lyeh/frodo) to init and deinit the EDGE subsystems in strict order.
 Frodo is a ring dependency system that ensures that everything is done properly in order, even on system signals and crashes.
-Frodo can also restart the application to a desired ring, or a full restart.
+Frodo can also restart the application to a desired ring level, or a full restart.
 
 ```c++
 int main( int argc, const char **argv ) {

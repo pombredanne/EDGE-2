@@ -1,0 +1,2 @@
+cl /Zi /Oy- /MDd /DDEBUG /EHsc %* *.cpp *.c texture\*.cpp gl\*.cpp gl4\*.cpp mesh\*.cpp mesh\obj\parser.cpp ..\..\3rd\spot\spot*.c* -I ..\..\3rd -I .. -I ..\..\3rd\glew\include -I ..\..\3rd\freeglut\include -I ..\..\3rd\sdl2\include -DFREEGLUT_LIB_PRAGMAS=0 -DFREEGLUT_STATIC  -I ..\..\3rd\gl3w\include ..\..\3rd\SDL2\lib\x64\SDL2.lib ..\..\3rd\glew\src\glew.c -DGLEW_STATIC ..\..\3rd\freeglut\src\f*.c -I ..\..\13 ..\..\13\geo\*.cpp -I ..\..\3rd\glfw\include
+copy /y ..\..\3rd\sdl2\lib\x64\*.dll

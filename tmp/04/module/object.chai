@@ -1,0 +1,21 @@
+// Your script object
+
+def script_object::script_object()
+{ 
+say("0");
+}
+
+def script_object::on_start()
+{ 
+say("1");
+}
+
+def script_object::on_update(dt)
+{ 
+say("2");
+}
+
+def script_object::on_end()
+{ 
+say("3");
+}

@@ -1,0 +1,38 @@
+workdir=$(dirname $0)
+
+check() {
+    bin=$1
+    output=$2
+
+    input="${output}.gz"
+
+    echo "Decompressing (zcat)."
+    zcat $workdir/$input > $workdir/$output
+
+    echo "Decompressing (obfuslate)."
+    ./$bin < $workdir/$input > $workdir/output
+
+    echo "Comparing output."
+    cmp $workdir/$output $workdir/output 2> /dev/null
+
+    if [ $? == 0 ]; then
+        echo -e "\033[1m[PASSED]\033[0m"
+    else
+        echo -e "\033[1;31m[FAILED] \$? = $?\033[0m"
+    fi
+
+    echo
+}
+
+fetch() {
+    url=$1
+    text=$2
+
+    echo "Downloading $text."
+    wget -q -P $workdir -c "${url}/${text}.gz"
+
+    if [ $? != 0 ]; then
+        echo -e "\033[1;31m[ERROR]\033[0m Failed to download ${url}/${text}.gz"
+        exit 1
+    fi
+}

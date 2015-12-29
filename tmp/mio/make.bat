@@ -1,0 +1,1 @@
+cl /Femio.exe -I lua-5.2.2\src *.c -I . -I \commit\crawler\libs\frameworks\freeglut\include -DM_PI=3.14159 -DSTBI_NO_HDR \commit\crawler\libs\frameworks\freeglut\src\*.c -DFREEGLUT_STATIC -DFREEGLUT_LIB_PRAGMAS=0 user32.lib gdi32.lib opengl32.lib kernel32.lib winmm.lib lua-5.2.2\src\*.c 

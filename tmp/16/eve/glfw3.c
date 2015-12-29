@@ -1,0 +1,33 @@
+#define _GLFW_USE_OPENGL
+#define _GLFW_WIN32
+#define _GLFW_WGL
+#pragma comment(lib, "shell32.lib")
+
+//#include "../../3rd/glfw/src/cocoa_time.c"
+#include "../../3rd/glfw/src/context.c"
+//#include "../../3rd/glfw/src/egl_context.c"
+//#include "../../3rd/glfw/src/glx_context.c"
+#include "../../3rd/glfw/src/init.c"
+#include "../../3rd/glfw/src/input.c"
+//#include "../../3rd/glfw/src/linux_joystick.c"
+//#include "../../3rd/glfw/src/mir_init.c"
+//#include "../../3rd/glfw/src/mir_monitor.c"
+//#include "../../3rd/glfw/src/mir_window.c"
+#include "../../3rd/glfw/src/monitor.c"
+//#include "../../3rd/glfw/src/posix_time.c"
+//#include "../../3rd/glfw/src/posix_tls.c"
+#include "../../3rd/glfw/src/wgl_context.c"
+#include "../../3rd/glfw/src/win32_init.c"
+#include "../../3rd/glfw/src/win32_joystick.c"
+#include "../../3rd/glfw/src/win32_monitor.c"
+#include "../../3rd/glfw/src/win32_time.c"
+#include "../../3rd/glfw/src/win32_tls.c"
+#include "../../3rd/glfw/src/win32_window.c"
+#include "../../3rd/glfw/src/window.c"
+//#include "../../3rd/glfw/src/wl_init.c"
+//#include "../../3rd/glfw/src/wl_monitor.c"
+//#include "../../3rd/glfw/src/wl_window.c"
+//#include "../../3rd/glfw/src/x11_init.c"
+//#include "../../3rd/glfw/src/x11_monitor.c"
+//#include "../../3rd/glfw/src/x11_window.c"
+//#include "../../3rd/glfw/src/xkb_unicode.c"

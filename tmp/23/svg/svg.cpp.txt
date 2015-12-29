@@ -1,0 +1,59 @@
+#include <eve/gl.hpp>
+#include <eve/nocopy.hpp>
+#include <eve/disable.hpp>
+#include <nanosvg.h>
+
+namespace eve
+{
+namespace geometry
+{
+        struct svg : nocopy
+        {
+            explicit svg( const std::string &pathFile )
+            {
+                // Load
+                struct SVGPath* plist;
+                plist = svgParseFromFile( pathFile.c_str() ); //"fg.svg"); //bg.svg"); tiger.svg");
+
+                /*
+                glColor3fv(color);
+                glPolygonMode(MaterialFace.Front, PolygonMode.Fill);
+                glBegin(BeginMode.Polygon);
+                for (int j = 0; j < sides; j++)
+                {
+                glVertex2f(xPoints[j], yPoints[j]);
+                }
+                glEnd();
+                glFinish();
+                */
+
+                eve::disable::texturing no_texture;
+
+                $glPolygonMode( GL_FRONT, GL_FILL );
+
+                // Use...
+                for (SVGPath* it = plist; it; it = it->next)
+                {
+                        if( it->hasFill )
+                        {
+                            unsigned int glColor = it->fillColor;
+                            $glColor3ub( (glColor >> 16) & 0xFF, (glColor >> 8) & 0xFF, glColor & 0xFF );
+                        }
+
+                        $glBegin( it->closed ? GL_LINE_LOOP : GL_LINE_STRIP);
+                        for( int i = 0; i < it->npts; ++i)
+                                $glVertex3f(it->pts[i*2], it->pts[i*2+1], 160.0f );
+                        if( it->npts )
+                        {
+                            $glVertex3f( it->pts[ (it->npts-1)*2], it->pts[(it->npts-1)*2+1], 160.0f );
+                            $glVertex3f( it->pts[ (it->npts-1)*2], it->pts[(it->npts-1)*2+1], 160.0f );
+                        }
+                        $glEnd();
+                }
+
+                // Delete
+                svgDelete(plist);
+            }
+        };
+}
+}

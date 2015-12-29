@@ -59,3 +59,4 @@ echo win32 builds && prj\premake5 vs2013 && msbuild ee.sln /m /p:FS=true /verbos
 
 ## Changelog
 - v0.0.0 (2015/12/05): Initial commit
+
